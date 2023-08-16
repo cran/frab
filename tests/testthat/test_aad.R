@@ -1,22 +1,15 @@
-## Define some checker functions, and call them at the end.  They
-## should all return TRUE if the package works, and stop with error if
-## a test is failed.  Function checker1() has one argument, checker2()
-## two, and checker3() has three.
+##   Function checker1() has one argument, checker2() two, and
+## checker3() has three.
 
-test_that("Test suite aab.R",{
+test_that("Test suite aad.R",{
 
 checker1 <- function(A){
   expect_true(A == +A)    
-  expect_true(A + zero() ==  A)
-  expect_true(A - zero() ==  A)
-  expect_true(zero() + A ==  A)
-  expect_true(zero() - A == -A)
-  expect_true(is.zero(A-A))
   expect_true(A == -(-A))
   expect_true(A+A == 2*A)
   expect_true(A+A == A*2)
 
-  expect_true(is.zero(A-A))
+  expect_true(is.empty(A-A))
   expect_true(A+A+A == 3*A)
   expect_true(A+A+A == A*3)
 
@@ -30,10 +23,15 @@ checker1 <- function(A){
   expect_true(pmax(A,A) == A)
   expect_true(pmin(A,A) == A)
 
+  expect_true(sum(values(asum(A,1))) == sum(values(A)))
+
+
+
+
 }   # checker1() closes
   
 checker2 <- function(A,B){
-  expect_true(A+B == B+A) # 1.1
+  expect_true(A+B == B+A)
   expect_true(2*A+B == A+A+B)
   expect_true(A+2*B == B+B+A)
 
@@ -45,10 +43,6 @@ checker2 <- function(A,B){
 
   expect_true(all(pmin(A,B)-A <= 0))
   expect_true(all(pmin(A,B)-B <= 0))
-
-  expect_true(length(A+B) <= length(A) + length(B))
-  expect_true(length(A-B) <= length(A) + length(B))
-
 
 }   # checker2() closes
 
@@ -65,19 +59,17 @@ checker3 <- function(A,B,C){
   
 
 for(i in seq_len(10)){
-  A <- rfrab()
-  B <- rfrab()
-  C <- rfrab()
+  A <- rspar()
+  B <- rspar()
+  C <- rspar()
   
   checker1(A)
-  checker1(zero())
   checker2(A,B)
-  checker2(A,zero())
   checker3(A,B,C)
-  checker3(A,B,zero())
+
+  checker1(rsparr())
 }
 
-checker3(frab(c(a=1)),frab(c(a=-1,b=4)),frab(c(b=-4,c=3)))
 
 
 } )

@@ -2,6 +2,7 @@
 knitr::opts_chunk$set(echo = TRUE)
 options(rmarkdown.html_vignette.check_title = FALSE)
 library("frab")
+library("mvtnorm")
 set.seed(1)
 
 ## ----label=badtables----------------------------------------------------------
@@ -47,4 +48,23 @@ b <- table(sample(letters[1:8],12,replace=T))
 a
 b
 a+b
+
+## ----label=twodeetables-------------------------------------------------------
+(x <- rspar2(9))
+(y <- rspar2(9))
+x+y
+
+## ----label=threedeetables-----------------------------------------------------
+A <- matrix(0.95,3,3)
+diag(A) <- 1
+x <- round(rmvnorm(300,mean=rep(10,3),sigma=A/7))
+x[] <- letters[x]
+head(x)
+(sx  <- sparsetable(x))
+
+## ----label=showthreedeeadd----------------------------------------------------
+(sz <- sparsetable(matrix(sample(letters[9:11],12,replace=TRUE),ncol=3),1001:1004))
+
+## ----label=usualsemantics-----------------------------------------------------
+sx + sz
 

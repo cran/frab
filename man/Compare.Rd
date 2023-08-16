@@ -7,12 +7,14 @@
 \alias{frab_eq}
 \alias{frab_compare_frab}
 \alias{frab_eq_num}
+\alias{frab_ne_num}
 \alias{frab_gt_num}
 \alias{frab_ge_num}
 \alias{frab_lt_num}
 \alias{frab_le_num}
 \alias{frab_compare_numeric}
 \alias{num_eq_frab}
+\alias{num_ne_frab}
 \alias{num_gt_frab}
 \alias{num_ge_frab}
 \alias{num_lt_frab}
@@ -31,19 +33,22 @@
   it calls low-level helper function \code{c_frab_eq()}, which calls its
   \proglang{C} namesake which is written for speed (specifically,
   returning \code{FALSE} as soon as it spots a difference between its
-  two arguments).
+  two arguments).  Note that if any value is \code{NA}, \code{frab_eq()}
+  will return \code{FALSE}.
   
 }
 \usage{
 frab_eq(e1,e2)
 frab_compare_frab(e1,e2)
 frab_eq_num(e1,e2)
+frab_ne_num(e1,e2)
 frab_gt_num(e1,e2)
 frab_ge_num(e1,e2)
 frab_lt_num(e1,e2)
 frab_le_num(e1,e2)
 frab_compare_numeric(e1,e2)
 num_eq_frab(e1,e2)
+num_ne_frab(e1,e2)
 num_gt_frab(e1,e2)
 num_ge_frab(e1,e2)
 num_lt_frab(e1,e2)

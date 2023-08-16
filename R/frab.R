@@ -8,6 +8,19 @@ setMethod("names","frab",
               return(disord(names(x@x),h=hashcal(x@x)))
           } )
 
+setReplaceMethod("names",signature(x="frab",value="disord"),
+                 function(x,value){
+                     v <- values(x)
+                     stopifnot(consistent(v,value))
+                     frab(setNames(elements(v),elements(value)))
+                 } )
+
+setReplaceMethod("names",signature(x="frab",value="character"),
+                 function(x,value){
+                     stopifnot(length(x)==1)
+                     frab(setNames(values(x),value))
+                 } )
+
 setGeneric("values",function(x){standardGeneric("values")})
 setMethod("values","frab",
           function(x){
@@ -67,6 +80,8 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
     return(list_to_frab(x))
   } else if(is.1dtable(x)){
     return(table_to_frab(x))
+  } else if(is.sparsetable(x)){
+    return(sparsetable_to_frab(x))
   } else if(is.frab(x)){
     return(x)
   } else {
@@ -80,11 +95,16 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
   as.frab(c_frab_add(elements(names(F1)), elements(values(F1)),
                      elements(names(F2)), elements(values(F2))))
 }
- 
-`frab_multiply_numeric` <- function(e1,e2){frab(setNames(elements(values(e1)*e2),elements(names(e1))))}
-`frab_power_numeric`    <- function(e1,e2){frab(setNames(elements(values(e1)^e2),elements(names(e1))))}
-`numeric_multiply_frab` <- function(e1,e2){frab(setNames(elements(e1*values(e2)),elements(names(e2))))}
-`numeric_power_frab`    <- function(e1,e2){frab(setNames(elements(e1^values(e2)),elements(names(e2))))}
+
+`frab_multiply_frab` <- function(F1,F2){
+  as.frab(c_frab_multiply(elements(names(F1)), elements(values(F1)),
+                     elements(names(F2)), elements(values(F2))))
+}
+
+`frab_plus_numeric`     <- function(e1,e2){if(is.namedvector(e2)){return(e1+frab(e2))}else{return(frab(setNames(elements(values(e1)+e2),elements(names(e1)))))}}
+`frab_multiply_numeric` <- function(e1,e2){if(is.namedvector(e2)){stop("not defined")}else{return(frab(setNames(elements(values(e1)*e2),elements(names(e1)))))}}
+`frab_power_numeric`    <- function(e1,e2){if(is.namedvector(e2)){stop("not defined")}else{return(frab(setNames(elements(values(e1)^e2),elements(names(e1)))))}}
+`numeric_power_frab`    <- function(e1,e2){stop("<numeric> ^ <frab> not defined")}
 
 `frab_unary` <- function(e1,e2){
   switch(.Generic,
@@ -100,13 +120,14 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
   switch(.Generic,
          "+" = frab_plus_frab(e1, e2),
          "-" = frab_plus_frab(e1, frab_negative(e2)),
+         "*" = frab_multiply_frab(e1, e2),
          stop(gettextf("binary operator %s not implemented on frabs", dQuote(.Generic)))
          ) }
 
 `frab_arith_numeric` <- function(e1,e2){ # e1 frab, e2 numeric; e2 might be a named vector.
   switch(.Generic,
-         "+" = frab_plus_frab(e1, as.frab(e2)),
-         "-" = frab_plus_frab(e1, frab_negative(as.frab(e2))),
+         "+" = frab_plus_numeric(e1, e2),
+         "-" = frab_plus_numeric(e1, -e2),
          "*" = frab_multiply_numeric(e1,e2),
          "/" = frab_multiply_numeric(e1,1/e2),
          "^" = frab_power_numeric(e1,e2),
@@ -115,10 +136,10 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
 
 `numeric_arith_frab` <- function(e1,e2){ # e1 numeric, e2 frab; e2 _might_ be a named vector.
   switch(.Generic,
-         "+" = frab_plus_frab(as.frab(e1),  e2),
-         "-" = frab_plus_frab(as.frab(e1), -e2),
-         "*" = numeric_multiply_frab(e1,e2), 
-         "/" = numeric_multiply_frab(e1,frab_reciprocal(e2)), 
+         "+" = frab_plus_numeric( e2,e1),
+         "-" = frab_plus_numeric(-e2,e1),
+         "*" = frab_multiply_numeric(e2,e1), 
+         "/" = frab_multiply_numeric(frab_reciprocal(e2),e1),
          "^" = numeric_power_frab(e1,e2),
          stop(gettextf("binary operator %s not implemented on frabs", dQuote(.Generic)))
          ) }
@@ -137,6 +158,7 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
 }
 
 `frab_eq_num` <- function(e1,e2){values(e1) == e2}
+`frab_ne_num` <- function(e1,e2){values(e1) != e2}
 `frab_gt_num` <- function(e1,e2){values(e1) >  e2}
 `frab_ge_num` <- function(e1,e2){values(e1) >= e2}
 `frab_lt_num` <- function(e1,e2){values(e1) <  e2}
@@ -145,6 +167,7 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
 `frab_compare_numeric` <- function(e1,e2){  # rfrab() > 3
   switch(.Generic,
          "==" = frab_eq_num(e1, e2),
+         "!=" = frab_ne_num(e1, e2),
          ">"  = frab_gt_num(e1, e2),
          ">=" = frab_ge_num(e1, e2),
          "<"  = frab_lt_num(e1, e2),
@@ -154,6 +177,7 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
     
 
 `num_eq_frab` <- function(e1,e2){e1 == values(e2)}
+`num_ne_frab` <- function(e1,e2){e1 != values(e2)}
 `num_gt_frab` <- function(e1,e2){e1 >  values(e2)}
 `num_ge_frab` <- function(e1,e2){e1 >= values(e2)}
 `num_lt_frab` <- function(e1,e2){e1 <  values(e2)}
@@ -162,6 +186,7 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
 `numeric_compare_frab` <- function(e1,e2){  # 4 <= rfrab()
   switch(.Generic,
          "==" = num_eq_frab(e1, e2),
+         "!=" = num_ne_frab(e1, e2),
          ">"  = num_gt_frab(e1, e2),
          ">=" = num_ge_frab(e1, e2),
          "<"  = num_lt_frab(e1, e2),
@@ -250,6 +275,12 @@ setReplaceMethod("[",signature(x="frab",i="character",j="missing",value="numeric
                      )
                  })
 
+setReplaceMethod("[",signature(x="frab",i="character",j="missing",value="logical"),
+                 function(x,i,j,value){
+                     x[i] <- as.numeric(value)  # the meat
+                     return(x)
+                 })
+
 setReplaceMethod("[",signature(x="frab",i="disord",j="missing",value="numeric"),
                  function(x,i,j,value){
                      s <- names(x)
@@ -268,6 +299,12 @@ setReplaceMethod("[",signature(x="frab",i="disord",j="missing",value="numeric"),
                      )
                  })
 
+setReplaceMethod("[",signature(x="frab",i="disord",j="missing",value="logical"),
+                 function(x,i,j,value){
+                     x[i] <- as.numeric(value)  # the meat
+                     return(x)
+                 } )
+
 setReplaceMethod("[",signature(x="frab",i="disord",j="missing",value="frab"),
                  function(x,i,j,value){
                    stop("not currently implemented.  Idiom such as x[x<0] <- -x[x<0] is disord-compliant [and meaningful] but not yet implemented")
@@ -280,12 +317,23 @@ setReplaceMethod("[",signature(x="frab",i="disindex",j="missing",value="numeric"
                      return(frab(setNames(elements(p),names(x))))
                  } )
 
-setReplaceMethod("[",signature(x="frab",i="missing",j="missing",value="ANY"),
+setReplaceMethod("[",signature(x="frab",i="missing",j="missing",value="numeric"),
                  function(x,i,j,value){
                    v <- values(x)
-                   v[] <- value
+                   v[] <- value  # disord discipline violations trapped here
                    return(frab(setNames(v,names(x))))
                  } )
+
+setReplaceMethod("[",signature(x="frab",i="missing",j="missing",value="frab"),
+                 function(x,i,j,value){
+                   stop("x[] <- y (with x, y frabs) does not make sense; try x <- y?")
+                 } )
+
+setReplaceMethod("[",signature(x="frab",i="missing",j="missing",value="ANY"),
+                 function(x,i,j,value){
+                   stop("frab,missing,missing,ANY-method not implemented")
+                 } )
+
 
 setReplaceMethod("[",signature(x="frab",i="ANY",j="ANY",value="ANY"),
                  function(x,i,j,value){
@@ -323,7 +371,7 @@ setGeneric("pmin",function(...){standardGeneric("pmin")})
     } else if(nargs()<3){
     return(pmax_pair(x, ...))
   } else {
-    return(pmax_pair(x, pmax_pair(...)))
+    return(pmax_pair(x, pmax_dots(...)))
   }
 }
 
@@ -333,7 +381,7 @@ setGeneric("pmin",function(...){standardGeneric("pmin")})
   } else if(nargs()<3){
     return(pmin_pair(x, ...))
   } else {
-    return(pmin_pair(x, pmin_pair(...)))
+    return(pmin_pair(x, pmin_dots(...)))
   }
 }
 
@@ -341,13 +389,33 @@ setMethod("pmax",signature("..."="frab"), function(...){pmax_dots(...)} )
 setMethod("pmin",signature("..."="frab"), function(...){pmin_dots(...)} )
 
 setMethod("pmax",signature("..."="ANY"),function(...,na.rm=FALSE){base::pmax(..., na.rm=na.rm)})
-setMethod("pmin",signature("..."="ANY"),function(...,na.rm=FALSE){base::pmax(..., na.rm=na.rm)})
+setMethod("pmin",signature("..."="ANY"),function(...,na.rm=FALSE){base::pmin(..., na.rm=na.rm)})
 
 setGeneric("is.na")
 setMethod("is.na","frab",function(x){which(is.na(values(x)))})
 setGeneric("is.na<-")
 setReplaceMethod("is.na",signature("frab",value="disord"),
                  function(x,value){
-                   values(x)[value] <- NA
-                   return(x)
+                   v <- values(x)
+                   is.na(v) <- value # the meat
+                   return(frab(setNames(elements(v),elements(names(x)))))
                  } )
+
+setGeneric("is.notna",function(x){standardGeneric("is.notna")})
+setMethod("is.notna","frab",function(x){which(!is.na(values(x)))})
+
+setMethod("Summary", "frab",
+          function(x, ..., na.rm=FALSE){
+            switch(.Generic,
+                   max    = max(values(x)),
+                   min    = min(values(x)),
+                   range  = c(min(values(x)),max(values(x))),
+                   sum    = sum(values(x)),
+                   stop(gettextf("Summary function %s not implemented on frabs", dQuote(.Generic)))
+                   )
+          }
+          )
+
+
+
+

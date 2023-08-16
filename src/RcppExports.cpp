@@ -36,6 +36,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// c_frab_multiply
+List c_frab_multiply(const CharacterVector names1, const NumericVector values1, const CharacterVector names2, const NumericVector values2);
+RcppExport SEXP _frab_c_frab_multiply(SEXP names1SEXP, SEXP values1SEXP, SEXP names2SEXP, SEXP values2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterVector >::type names1(names1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type values1(values1SEXP);
+    Rcpp::traits::input_parameter< const CharacterVector >::type names2(names2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector >::type values2(values2SEXP);
+    rcpp_result_gen = Rcpp::wrap(c_frab_multiply(names1, values1, names2, values2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // c_frab_pmax
 List c_frab_pmax(const CharacterVector names1, const NumericVector values1, const CharacterVector names2, const NumericVector values2);
 RcppExport SEXP _frab_c_frab_pmax(SEXP names1SEXP, SEXP values1SEXP, SEXP names2SEXP, SEXP values2SEXP) {
@@ -64,12 +78,129 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// sparsetable_maker
+List sparsetable_maker(const CharacterMatrix& M, const NumericVector& d);
+RcppExport SEXP _frab_sparsetable_maker(SEXP MSEXP, SEXP dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d(dSEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_maker(M, d));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_add
+List sparsetable_add(const CharacterMatrix& M1, const NumericVector& d1, const CharacterMatrix& M2, const NumericVector& d2);
+RcppExport SEXP _frab_sparsetable_add(SEXP M1SEXP, SEXP d1SEXP, SEXP M2SEXP, SEXP d2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d1(d1SEXP);
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d2(d2SEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_add(M1, d1, M2, d2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_overwrite
+List sparsetable_overwrite(const CharacterMatrix& M1, const NumericVector& d1, const CharacterMatrix& M2, const NumericVector& d2);
+RcppExport SEXP _frab_sparsetable_overwrite(SEXP M1SEXP, SEXP d1SEXP, SEXP M2SEXP, SEXP d2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d1(d1SEXP);
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d2(d2SEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_overwrite(M1, d1, M2, d2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_accessor
+NumericVector sparsetable_accessor(const CharacterMatrix& M, const NumericVector& d, const CharacterMatrix& Mindex);
+RcppExport SEXP _frab_sparsetable_accessor(SEXP MSEXP, SEXP dSEXP, SEXP MindexSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d(dSEXP);
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type Mindex(MindexSEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_accessor(M, d, Mindex));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_setter
+List sparsetable_setter(const CharacterMatrix& M1, const NumericVector& d1, const CharacterMatrix& M2, const NumericVector& d2);
+RcppExport SEXP _frab_sparsetable_setter(SEXP M1SEXP, SEXP d1SEXP, SEXP M2SEXP, SEXP d2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d1(d1SEXP);
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d2(d2SEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_setter(M1, d1, M2, d2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_equality
+bool sparsetable_equality(const CharacterMatrix& M1, const NumericVector& d1, const CharacterMatrix& M2, const NumericVector& d2);
+RcppExport SEXP _frab_sparsetable_equality(SEXP M1SEXP, SEXP d1SEXP, SEXP M2SEXP, SEXP d2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d1(d1SEXP);
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d2(d2SEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_equality(M1, d1, M2, d2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_asum_include
+List sparsetable_asum_include(const CharacterMatrix& M, const NumericVector& d, const IntegerVector& n);
+RcppExport SEXP _frab_sparsetable_asum_include(SEXP MSEXP, SEXP dSEXP, SEXP nSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d(dSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type n(nSEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_asum_include(M, d, n));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sparsetable_pmax
+List sparsetable_pmax(const CharacterMatrix& M1, const NumericVector& d1, const CharacterMatrix& M2, const NumericVector& d2);
+RcppExport SEXP _frab_sparsetable_pmax(SEXP M1SEXP, SEXP d1SEXP, SEXP M2SEXP, SEXP d2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M1(M1SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d1(d1SEXP);
+    Rcpp::traits::input_parameter< const CharacterMatrix& >::type M2(M2SEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type d2(d2SEXP);
+    rcpp_result_gen = Rcpp::wrap(sparsetable_pmax(M1, d1, M2, d2));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_frab_c_frab_identity", (DL_FUNC) &_frab_c_frab_identity, 2},
     {"_frab_c_frab_add", (DL_FUNC) &_frab_c_frab_add, 4},
+    {"_frab_c_frab_multiply", (DL_FUNC) &_frab_c_frab_multiply, 4},
     {"_frab_c_frab_pmax", (DL_FUNC) &_frab_c_frab_pmax, 4},
     {"_frab_c_frab_eq", (DL_FUNC) &_frab_c_frab_eq, 4},
+    {"_frab_sparsetable_maker", (DL_FUNC) &_frab_sparsetable_maker, 2},
+    {"_frab_sparsetable_add", (DL_FUNC) &_frab_sparsetable_add, 4},
+    {"_frab_sparsetable_overwrite", (DL_FUNC) &_frab_sparsetable_overwrite, 4},
+    {"_frab_sparsetable_accessor", (DL_FUNC) &_frab_sparsetable_accessor, 3},
+    {"_frab_sparsetable_setter", (DL_FUNC) &_frab_sparsetable_setter, 4},
+    {"_frab_sparsetable_equality", (DL_FUNC) &_frab_sparsetable_equality, 4},
+    {"_frab_sparsetable_asum_include", (DL_FUNC) &_frab_sparsetable_asum_include, 3},
+    {"_frab_sparsetable_pmax", (DL_FUNC) &_frab_sparsetable_pmax, 4},
     {NULL, NULL, 0}
 };
 
