@@ -112,7 +112,7 @@ setMethod("show", "sparsetable", function(object){print_sparsetable_matrixform(o
     if(is.sparsetable(x)){
         return(x)
     } else if(is.frab(x)){
-        return(sparsetable(cbind(names(x)),values(x)))
+        return(sparsetable(cbind(elements(names(x))),elements(values(x))))
     } else if(is.list(x)){
         return(sparsetable(x$index,x$value))
     } else if(is.table(x)){
@@ -242,11 +242,12 @@ setMethod("show", "sparsetable", function(object){print_sparsetable_matrixform(o
 
 `sparsetable_compare_numeric` <- function(e1,e2){  # rsparsetable() > 3
   switch(.Generic,
-         "==" = sparsetable_eq_num(e1, e2),
-         ">"  = sparsetable_gt_num(e1, e2),
-         ">=" = sparsetable_ge_num(e1, e2),
-         "<"  = sparsetable_lt_num(e1, e2),
-         "<=" = sparsetable_le_num(e1, e2),
+         "==" =  sparsetable_eq_num(e1, e2),
+         "!=" = !sparsetable_eq_num(e1, e2),
+         ">"  =  sparsetable_gt_num(e1, e2),
+         ">=" =  sparsetable_ge_num(e1, e2),
+         "<"  =  sparsetable_lt_num(e1, e2),
+         "<=" =  sparsetable_le_num(e1, e2),
          stop(gettextf("Comparison operator %s not implemented in this case", dQuote(.Generic)))
          ) }
 

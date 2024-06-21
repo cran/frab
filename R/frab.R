@@ -46,9 +46,9 @@ setReplaceMethod("values",signature(x="frab",value="disord"),
 setGeneric("namedvector",function(x){standardGeneric("namedvector")})
 setMethod("namedvector","frab",function(x){x@x})
 
-`as.namedvector`   <- function(v){namedvector(v)}
-`is.namedvector`   <- function(v){is.vector(v) && is.numeric(v) && !is.null(names(v))}
-`is.unnamedvector` <- function(v){is.vector(v) && is.numeric(v) &&  is.null(names(v))}
+`as.namedvector`    <- function(v){namedvector(v)}
+`is.namedvector`    <- function(v){is.vector(v) && is.numeric(v) && !is.null(names(v))}
+`is.unnamedvector`  <- function(v){is.vector(v) && is.numeric(v) &&  is.null(names(v))}
 `is.namedlogical`   <- function(v){is.vector(v) && is.logical(v) && !is.null(names(v))}
 `is.unnamedlogical` <- function(v){is.vector(v) && is.logical(v) &&  is.null(names(v))}
 
@@ -101,9 +101,42 @@ setMethod("as.table","frab",function(x,...){structure(as.namedvector(x),dim=leng
                      elements(names(F2)), elements(values(F2))))
 }
 
-`frab_plus_numeric`     <- function(e1,e2){if(is.namedvector(e2)){return(e1+frab(e2))}else{return(frab(setNames(elements(values(e1)+e2),elements(names(e1)))))}}
-`frab_multiply_numeric` <- function(e1,e2){if(is.namedvector(e2)){stop("not defined")}else{return(frab(setNames(elements(values(e1)*e2),elements(names(e1)))))}}
-`frab_power_numeric`    <- function(e1,e2){if(is.namedvector(e2)){stop("not defined")}else{return(frab(setNames(elements(values(e1)^e2),elements(names(e1)))))}}
+`frab_plus_numeric`     <- function(e1,e2){
+    if(is.namedvector(e2)){
+        return(e1+frab(e2))
+    } else {  # e2 is an unnamed numeric vector
+        if(allsame(e2)){
+            return(frab(setNames(elements(values(e1))+e2,elements(names(e1)))))
+        } else {
+            stop("disord violation")
+        }
+    }
+}
+
+`frab_multiply_numeric` <- function(e1,e2){
+    if(is.namedvector(e2)){
+        stop("not defined")
+    } else {
+         if(allsame(e2)){
+            return(frab(setNames(elements(values(e1))*e2,elements(names(e1)))))
+        } else {
+            stop("disord violation")
+        }
+    }
+}
+
+`frab_power_numeric` <- function(e1,e2){
+    if(is.namedvector(e2)){
+        stop("not defined")
+    } else {
+        if(allsame(e2)){
+            return(frab(setNames(elements(values(e1))^e2,elements(names(e1)))))
+        } else {
+            stop("disord violation")
+        }
+    }
+}
+        
 `numeric_power_frab`    <- function(e1,e2){stop("<numeric> ^ <frab> not defined")}
 
 `frab_unary` <- function(e1,e2){
@@ -211,9 +244,9 @@ setMethod("Compare", signature(e1="numeric" , e2="frab"   ), numeric_compare_fra
 `rfrabb` <- function(n=100,v=-5:5,symb=letters){rfrab(n=n,v=v,symb=symb)}
 
 `rfrabbb` <- function(n=5000,v=-10:10,symb=letters,i=3){
-  rfrab(n=n,v=v,symb=apply(expand.grid(rep(list(symb),i)),1,paste,collapse=""))
+    frab(setNames(sample(v,n,replace=TRUE),replicate(n,paste(sample(symb,i,replace=TRUE),collapse=""))))
 }
-  
+
 setMethod("show", "frab", function(object){frab_print(object)})
 
 "frab_print" <- function(object){
@@ -254,8 +287,12 @@ setMethod("[",  # x[]
 
 setMethod("[",
           signature("frab", i="ANY",j="missing"),
-          function(x,i,j,drop){stop("not implemented")}
-          )
+          function(x,i,j,drop){
+              if(length(i)==0){
+                  return(zero())
+              } else {
+                  stop("extraction: frab,ANY,missing-method not implemented")}
+          } )
 
 setMethod("[",
           signature("frab", i="disindex",j="missing"),
@@ -416,6 +453,17 @@ setMethod("Summary", "frab",
           }
           )
 
+setAs(from="frab",to="data.frame",def=function(from){
+  jj <- as.namedvector(from)
+  data.frame(key = names(jj),value=as.vector(jj))
+} )
 
+setMethod("as.data.frame","frab",function(x){as(x,"data.frame")})
 
+`df_to_frab` <- function(from){
+  stopifnot(identical(sort(colnames(from)),c("key","value")))
+  frab(setNames(from$value,from$key))
+}
 
+setAs(from="data.frame",to="frab",def=df_to_frab)
+setMethod("as.frab","data.frame",function(x){as(x,"frab")})

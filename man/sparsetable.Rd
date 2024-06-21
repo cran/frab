@@ -145,7 +145,7 @@ are printed using matrix index form, just the same as any other arity.
 
 Functions \code{rspar()}, \code{rspar2()}, and \code{rsparr()} create
 random \code{sparsetable} objects of increasing complexity.  The
-defaults are chosen to make the values of sensible sizes.
+defaults are chosen so that the returned frabs are of sensible sizes.
 
 Function \code{drop()} takes a sparsetable object of arity one and
 coerces to a \code{frab} object.
@@ -156,13 +156,13 @@ Function \code{dim()} returns a named vector, with names being the
 Extraction and replacement methods are a subset of \CRANpkg{spray}
 methods, but most should work.  There is special dispensation so that
 standard idiom for arrays [e.g. \code{x['a','b','a']} and
-\code{x['a','b','a'] <- 55}] work as expected, although the general
-expectation is that access and replacement use (character) matrices and
-an index object.  However, indexing by \code{disord} and \code{disindex}
-objects should also work [e.g. \code{x[x>7]}].
+\code{x['a','b','a'] <- 55}] should work as expected, although the
+general expectation is that access and replacement use (character)
+matrices and an index object.  However, indexing by \code{disord} and
+\code{disindex} objects should also work [e.g. \code{x[x>7]}].
 
-The \CRANpkg{spray} source code and the \code{sparstable} functionality
-hve about 90\% overlap; there were enough small differences between the
+The \CRANpkg{spray} source code and the \code{sparsetable} functionality
+have about 90\% overlap; there were enough small differences between the
 codes to make it worth maintaining two sets of source code, IMO.
 
 There is a discussion of package idiom in the vignette,
@@ -171,7 +171,7 @@ There is a discussion of package idiom in the vignette,
 }
 \note{
   The pronunciation of \dQuote{sparsetable} has the emphasis on the
-  first syllable, so it rhymes with \dQuote{Barnable} or
+  first syllable, so it rhymes with [British river-port town]
   \dQuote{Barnstaple}.
 }
 \author{Robin K. S. Hankin}

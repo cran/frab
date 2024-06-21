@@ -10,6 +10,7 @@ Named vectors are closely related to \code{frab} objects, but are not
 the same.  However, there is a natural coercion from one to the other.
 }
 \usage{
+as.namedvector(v)
 is.namedvector(v)
 is.namedlogical(v)
 is.unnamedlogical(v)
@@ -29,12 +30,16 @@ Function \code{is.namedvector()} returns a boolean, function
 \code{as.namedvector()} returns a named vector.
 }
 \author{Robin K. S. Hankin}
+\note{
+
+The issue of named logical vectors in the `frab` package is discussed
+briefly at `inst/wittgenstein.Rmd`.
+
+}
 \examples{
 x <- c(a=5, b=3, c=-2,b=-3, x=33)
 is.namedvector(x)
 as.namedvector(frab(x))
-
-
 
 x <- c(a=5, b=3, c=-2)
 y <- c(p=1, c=2, d= 6)

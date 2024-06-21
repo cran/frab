@@ -6,6 +6,7 @@
 test_that("Test suite aab.R",{
 
 checker1 <- function(A){
+  expect_true(A == A)
   expect_true(A == +A)    
   expect_true(A + zero() ==  A)
   expect_true(A - zero() ==  A)
@@ -30,6 +31,15 @@ checker1 <- function(A){
   expect_true(pmax(A,A) == A)
   expect_true(pmin(A,A) == A)
 
+  expect_true(A[NULL] + A == A)
+  
+
+  dA <- as.data.frame(A)
+  Adash <- as.frab(dA)
+  expect_true(is.data.frame(dA))
+  expect_true(is.frab(Adash))
+  expect_true(A == Adash)
+
 }   # checker1() closes
   
 checker2 <- function(A,B){
@@ -48,6 +58,11 @@ checker2 <- function(A,B){
 
   expect_true(length(A+B) <= length(A) + length(B))
   expect_true(length(A-B) <= length(A) + length(B))
+
+  x <- as.namedvector(A)
+  y <- as.namedvector(B)
+
+  expect_true(frab(c(x,y)) == frab(x) + frab(y))
 
 
 }   # checker2() closes
@@ -77,6 +92,8 @@ for(i in seq_len(10)){
   checker3(A,B,zero())
 }
 
+checker2(frab(c(a=1,b=2,c=3)),frab(c(c=6,x=6,z=9)))
+checker2(frab(c(a=1,b=2,c=3)),frab(c(c=6,x=6,c=-3)))
 checker3(frab(c(a=1)),frab(c(a=-1,b=4)),frab(c(b=-4,c=3)))
 
 
